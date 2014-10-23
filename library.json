@@ -1,5 +1,5 @@
 {
-  "name": "MSP430-Energia-DHT22",
+  "name": "DHT22",
   "keywords": "sensor, humidity, temperature, dht",
   "description": "Digital-output relative humidity & temperature sensor/module DHT22",
   "repository":
@@ -7,5 +7,7 @@
     "type": "git",
     "url": "https://github.com/TheDZhon/dht22_430.git"
   },
-  "examples": "*.ino"
+  "examples": "*.ino",
+  "frameworks": "energia",
+  "platforms": "timsp430"
 }
