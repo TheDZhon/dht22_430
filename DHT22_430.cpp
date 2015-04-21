@@ -111,8 +111,12 @@ boolean DHT22::get() {
       // by energia » Tue Jun 26, 2012 9:24 pm
       // see http://www.43oh.com/forum/viewtopic.php?p=20821#p20821
       //      if (counter > 8)
-      if (counter > 13)
-        data[j/8] |= 1;
+#if defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
+       if (counter > 8)
+#else
+       if (counter > 13)
+#endif
+           data[j/8] |= 1;
       j++;
     }
   }
