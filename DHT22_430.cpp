@@ -20,6 +20,15 @@
 
 #include "DHT22_430.h"
 
+#if defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) \
+	|| defined(__MSP430F5529__) || defined (__MSP430FR5739) || defined (__MSP430FR5969__) // MSP430 family
+	#define DHT22_DELAY_US 3
+	#define DHT22_CYCLES_CNT 8
+#else // Other boards, tested only with Stellaris Launchpad (EK-LM4F120XL)
+	#define DHT22_DELAY_US 1
+	#define DHT22_CYCLES_CNT 13
+#endif
+
 DHT22::DHT22(uint8_t pin) {
   _pin = pin;
   _lastMillis = 0;
@@ -79,7 +88,6 @@ boolean DHT22::get() {
     while (digitalRead(_pin) == lastState) {
       counter++;
 
-#if defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
       // LaunchPad implementation
       // LaunchPad faster than Arduino
       // 1. replace delayMicroseconds(1) with delayMicroseconds(3)
@@ -87,10 +95,8 @@ boolean DHT22::get() {
       // 2. compare counter to a higher number
       // by energia » Tue Jun 26, 2012 9:24 pm
       // see http://www.43oh.com/forum/viewtopic.php?p=20821#p20821
-      delayMicroseconds(3);
-#else // other boards - not tested
-      delayMicroseconds(1);
-#endif
+      delayMicroseconds(DHT22_DELAY_US);
+
       if (counter == 255) {
         break;
       }
@@ -111,11 +117,7 @@ boolean DHT22::get() {
       // by energia » Tue Jun 26, 2012 9:24 pm
       // see http://www.43oh.com/forum/viewtopic.php?p=20821#p20821
       //      if (counter > 8)
-#if defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
-       if (counter > 8)
-#else
-       if (counter > 13)
-#endif
+      if (counter > DHT22_CYCLES_CNT)
            data[j/8] |= 1;
       j++;
     }
